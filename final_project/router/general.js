@@ -92,7 +92,7 @@ public_users.get('/title/:title',function (req, res) {
 });
 
 // Get books based on title
-public_users.get("async/title/:title", async function(req, res) {
+public_users.get('/async/title/:title', async function(req, res) {
     try {
         console.log("here");
         let response = await axios.get(`http://localhost:5000/title/${req.params.title}`);
