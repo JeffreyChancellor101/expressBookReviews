@@ -31,18 +31,23 @@ public_users.get("/all", (req, res) => {
 })
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn', async function (req, res) {
+public_users.get('/async/isbn/:isbn', async function (req, res) {
   let isbn = req.params.isbn;
-  let response = await axios.get(`https://localhost:5000/async/${isbn}`);
-    return res.send(data);
+  try{
+    let response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
+    return res.status(200).send(response.data);
+  }catch{
+    return res.status(400).json("Error getting book by isbn.");
+  }
+    
  });
 
- public_users.get('/async/:isbn', function(req, res){
+ public_users.get('/isbn/:isbn', function(req, res){
     let book = books[req.params.isbn];
     if(book){
-        return res.status(200).send(JSON.stringify(book, null, 4));
+        return res.send(JSON.stringify(book, null, 4));
     }
-        return res.status(400).json({message: "Book not found."})
+        return res.json({message: "Book not found."})
  })
   
 // Get book details based on author
@@ -60,6 +65,16 @@ public_users.get('/author/:author',function (req, res) {
   return res.status(300).json({message: "No book with this author."});
 });
 
+public_users.get('/async/author/:author', async function(req, res){
+    let author = req.params.author;
+    try {
+        let response = await axios.get(`http://localhost:5000/author/${author}`);
+        return res.send(response.data);
+    } catch (error) {
+        return res.json({message:"Error getting book by author."});
+    }
+})
+
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   
@@ -75,6 +90,17 @@ public_users.get('/title/:title',function (req, res) {
   }
   return res.status(300).json({message: "No book with this title."});
 });
+
+// Get books based on title
+public_users.get("async/title/:title", async function(req, res) {
+    try {
+        console.log("here");
+        let response = await axios.get(`http://localhost:5000/title/${req.params.title}`);
+        return res.send(response.data);
+    } catch (error) {
+        return res.json({message: "Error getting book based on title."});
+    }
+})
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
