@@ -56,6 +56,19 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 });
 
 // modify a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    
+    let isbn = req.params.isbn;
+    let book = books[isbn];
+    let username = req.body.username;
+  
+    if(book && username){
+      delete book["reviews"][username];
+    }
+    return res.status(200).json({message: "Book review has been deleted." });
+  })
+
+// modify a book review
 regd_users.put("/auth/review/modify/:isbn", (req, res) => {
     
   let isbn = req.params.isbn;
