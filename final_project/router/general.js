@@ -7,37 +7,76 @@ const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let {username, password} = req.body;
+  if(username && password){
+    if(isValid(username)){
+        return res.status(400).json({message: "User already exists."})
+    }else{
+        users.push({username, password});
+        return res.status(200).json({message: "User successfully registered."})
+    }
+  }
+  res.status(400).json({message: "Error registering user."});
 });
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  return res.status(200).json(books);
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let isbn = req.params.isbn;
+  let book = books[isbn];
+  if(book){
+    return res.status(200).json(book);
+  }
+  return res.status(400).json({message: "Error getting book using isbn"});
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let author = req.params.author;
+  let booklist = [];
+  for(let isbn in books){
+    if(books[isbn].author === author){
+        booklist.push(books[isbn]);
+    }
+  }
+  if(booklist){
+    return res.status(200).json(booklist);
+  }
+  return res.status(300).json({message: "No book with this author."});
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let title = req.params.title;
+  let booklist = [];
+  for(let isbn in books){
+    if(books[isbn].title === title){
+        booklist.push(books[isbn]);
+    }
+  }
+  if(booklist.length > 0){
+    return res.status(200).json(booklist);
+  }
+  return res.status(300).json({message: "No book with this title."});
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let isbn = req.params.isbn;
+  let book = books[isbn];
+  if(book){
+    return res.status(200).json(book);
+  }
+  return res.status(300).json({message: "No book with this isbn."});
 });
 
 module.exports.general = public_users;
